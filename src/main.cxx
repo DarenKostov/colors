@@ -1,6 +1,6 @@
 /*
 Colors By Daren Kostov
-Copyright (c) 2023 Daren Kostov
+Copyright (c) 2024 Daren Kostov
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -18,8 +18,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
+#include <cctype>
+#include <cmath>
 #include <iostream>
 #include <cstring>
+#include <stack>
+#include <sys/types.h>
 
 
 
@@ -211,27 +215,54 @@ int main(int argc, char **argv){
 //from string conversion functions:
 
 Color rgbStringToColor(std::string in){
-  // char allNums[]="0123456789";
 
-  // Color out;
-  // unsigned char* colorChannel[3]={&out.r, &out.g, &out.r};
-  // int currentChanelIndex=0;
+  Color out{0, 0, 0};
   
-  // for(int i=0; i<(int)in.size(); i++){
-  //   //
-  //   if(in.at(i)=='\0'){
-  //     break;
-  //   }
+  std::stack<int> digits;
+  size_t currentIndex=0;
+  for(; currentIndex<in.size(); currentIndex++){
     
-  //   //the given char is not a digit
-  //   if(std::strchr(allNums,in.at(i))==nullptr){
-  //     continue;
-  //   }
-      
-    
-    
-  // }
+    if(std::isdigit(in[currentIndex])){
+      digits.push(in[currentIndex]-'0');
+    }else{
+      break;
+     }
+  }
 
+  for(int i{0}; !digits.empty(); i++){
+    out.r+=digits.top()*std::pow(10, i);
+    digits.pop();
+  }
+
+  for(currentIndex++; currentIndex<in.size(); currentIndex++){
+    
+    if(std::isdigit(in[currentIndex])){
+      digits.push(in[currentIndex]-'0');
+    }else{
+      break;
+     }
+  }
+
+  for(int i{0}; !digits.empty(); i++){
+    out.g+=digits.top()*std::pow(10, i);
+    digits.pop();
+  }
+
+  for(currentIndex++; currentIndex<in.size(); currentIndex++){
+    
+    if(std::isdigit(in[currentIndex])){
+      digits.push(in[currentIndex]-'0');
+    }else{
+      break;
+     }
+  }
+
+  for(int i{0}; !digits.empty(); i++){
+    out.b+=digits.top()*std::pow(10, i);
+    digits.pop();
+  }
+  return out;
+  
 }
 
 
@@ -244,6 +275,8 @@ Color hexStringToColor(std::string in){
 
 
 Color hslStringToColor(std::string){}
+
+
 
 //from color conversion functions
 
